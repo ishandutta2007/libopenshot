@@ -54,6 +54,10 @@ void Shift::init_effect_details()
 	info.description = "Shift the image up, down, left, and right (with infinite wrapping).";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&x);
+	Keyframes.push_back(&y);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

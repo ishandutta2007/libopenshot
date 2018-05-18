@@ -56,6 +56,12 @@ void Wave::init_effect_details()
 	info.has_audio = false;
 	info.has_video = true;
 
+	// Populate list of keyframes
+	Keyframes.push_back(&wavelength);
+	Keyframes.push_back(&amplitude);
+	Keyframes.push_back(&multiplier);
+	Keyframes.push_back(&shift_x);
+	Keyframes.push_back(&speed_y);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

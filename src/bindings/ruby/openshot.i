@@ -179,4 +179,5 @@ namespace std {
  %template(FieldVector) vector<Field>;
  %template(MappedFrameVector) vector<MappedFrame>;
  %template(MappedMetadata) map<string, string>;
+ %template(Keyframes) list<Keyframe *>;
 }

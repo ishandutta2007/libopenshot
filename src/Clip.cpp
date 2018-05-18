@@ -92,6 +92,38 @@ void Clip::init_settings()
 	has_audio = Keyframe(-1.0);
 	has_video = Keyframe(-1.0);
 
+	// Populate list of keyframes
+	Keyframes.push_back(&alpha);
+	Keyframes.push_back(&channel_filter);
+	Keyframes.push_back(&channel_mapping);
+	Keyframes.push_back(&crop_height);
+	Keyframes.push_back(&crop_width);
+	Keyframes.push_back(&crop_x);
+	Keyframes.push_back(&crop_y);
+	Keyframes.push_back(&has_audio);
+	Keyframes.push_back(&has_video);
+	Keyframes.push_back(&location_x);
+	Keyframes.push_back(&location_y);
+	Keyframes.push_back(&perspective_c1_x);
+	Keyframes.push_back(&perspective_c1_y);
+	Keyframes.push_back(&perspective_c2_x);
+	Keyframes.push_back(&perspective_c2_y);
+	Keyframes.push_back(&perspective_c3_x);
+	Keyframes.push_back(&perspective_c3_y);
+	Keyframes.push_back(&perspective_c4_x);
+	Keyframes.push_back(&perspective_c4_y);
+	Keyframes.push_back(&rotation);
+	Keyframes.push_back(&scale_x);
+	Keyframes.push_back(&scale_y);
+	Keyframes.push_back(&shear_x);
+	Keyframes.push_back(&shear_y);
+	Keyframes.push_back(&time);
+	Keyframes.push_back(&volume);
+	Keyframes.push_back(&wave_color.alpha);
+	Keyframes.push_back(&wave_color.red);
+	Keyframes.push_back(&wave_color.green);
+	Keyframes.push_back(&wave_color.blue);
+
 	// Default pointers
 	manage_reader = false;
 }
@@ -112,12 +144,15 @@ void Clip::init_reader_rotation() {
 		// This is typical with cell phone videos filmed in different orientations
 		try {
 			float rotate_metadata = strtof(reader->info.metadata["rotate"].c_str(), 0);
-			rotation = Keyframe(rotate_metadata);
+			rotation.Clear();
+			rotation.AddPoint(Point(rotate_metadata));
 		} catch (exception e) {}
 	}
-	else
+	else {
 		// Default no rotation
-		rotation = Keyframe(0.0);
+		rotation.Clear();
+		rotation.AddPoint(Point(0.0));
+	}
 }
 
 // Default Constructor for a clip

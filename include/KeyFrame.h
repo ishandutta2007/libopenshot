@@ -91,6 +91,7 @@ namespace openshot {
 	public:
 		vector<Point> Points;			///< Vector of all Points
 		vector<Coordinate> Values;		///< Vector of all Values (i.e. the processed coordinates from the curve)
+		Fraction fps;					///< Optional framerate of this keyframe
 
 		/// Default constructor for the Keyframe class
 		Keyframe();
@@ -98,14 +99,29 @@ namespace openshot {
 		/// Constructor which sets the default point & coordinate at X=0
 		Keyframe(double value);
 
+		/// Constructor which sets the default point & coordinate at X=0 & framerate
+		//Keyframe(double value, Fraction fps);
+
 		/// Add a new point on the key-frame.  Each point has a primary coordinate, a left handle, and a right handle.
 		void AddPoint(Point p);
+
+		/// Add a new point on the key-frame.  Each point has a primary coordinate, a left handle, right handle, and framerate.
+		//void AddPoint(Point p, Fraction fps);
 
 		/// Add a new point on the key-frame, with some defaults set (BEZIER)
 		void AddPoint(double x, double y);
 
+		/// Add a new point on the key-frame, with some defaults set (BEZIER), and framerate
+		//void AddPoint(double x, double y, Fraction fps);
+
 		/// Add a new point on the key-frame, with a specific interpolation type
 		void AddPoint(double x, double y, InterpolationType interpolate);
+
+		/// Add a new point on the key-frame, with a specific interpolation type, and framerate
+		//void AddPoint(double x, double y, InterpolationType interpolate, Fraction fps);
+
+		/// Clear all points in this keyframe
+		void Clear();
 
 		/// Does this keyframe contain a specific point
 		bool Contains(Point p);
@@ -182,6 +198,9 @@ namespace openshot {
 
 		/// Replace an existing point with a new point
 		void UpdatePoint(int64_t index, Point p);
+
+		/// Update keyframe to new fps (if needed)
+		void UpdateFramerate(Fraction new_fps);
 
 		/// Print a list of points
 		void PrintPoints();

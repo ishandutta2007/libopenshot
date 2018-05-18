@@ -59,6 +59,13 @@ void ChromaKey::init_effect_details()
 	info.description = "Replaces the color (or chroma) of the frame with transparency (i.e. keys out the color).";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&color.alpha);
+	Keyframes.push_back(&color.red);
+	Keyframes.push_back(&color.green);
+	Keyframes.push_back(&color.blue);
+	Keyframes.push_back(&fuzz);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

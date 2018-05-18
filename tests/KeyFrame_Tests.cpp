@@ -378,3 +378,45 @@ TEST(Keyframe_Remove_Duplicate_Point)
 	CHECK_EQUAL(kf.GetLength(), 1);
 	CHECK_CLOSE(kf.GetPoint(0).co.Y, 2.0, 0.01);
 }
+
+TEST(Keyframe_Clear_Points)
+{
+	// Create a keyframe curve with 2 points
+	Keyframe kf;
+	kf.AddPoint(1, 0.0);
+	kf.AddPoint(2, 1.0);
+	kf.AddPoint(3, 2.0);
+
+	// Clear keyframe points
+	kf.Clear();
+
+	// Spot check values from the curve
+	CHECK_EQUAL(kf.GetLength(), 0);
+}
+
+TEST(Keyframe_UpdateFramerate)
+{
+	// Create a keyframe curve with 2 points
+	Keyframe kf;
+	kf.AddPoint(1, 0.0);
+	kf.AddPoint(100, 100.0);
+	kf.AddPoint(200, 0.0);
+	kf.UpdateFramerate(Fraction(24, 1));
+
+	// Spot check values from the curve
+	CHECK_EQUAL(kf.GetCount(), 3);
+	CHECK_EQUAL(kf.GetInt(1), 0);
+	CHECK_EQUAL(kf.GetInt(100), 100);
+	CHECK_EQUAL(kf.GetInt(200), 0);
+
+	// Update framerate on Keyframe
+	kf.UpdateFramerate(Fraction(30, 1));
+
+	// Spot check values from the curve
+	CHECK_EQUAL(kf.GetCount(), 3);
+	CHECK_EQUAL(kf.GetInt(1), 0);
+	CHECK_EQUAL(kf.GetInt(100), 94);
+	CHECK_EQUAL(kf.GetInt(125), 100);
+	CHECK_EQUAL(kf.GetInt(200), 30);
+	CHECK_EQUAL(kf.GetInt(250), 0);
+}

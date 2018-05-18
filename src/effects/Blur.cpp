@@ -56,6 +56,12 @@ void Blur::init_effect_details()
 	info.description = "Adjust the blur of the frame's image.";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&horizontal_radius);
+	Keyframes.push_back(&vertical_radius);
+	Keyframes.push_back(&sigma);
+	Keyframes.push_back(&iterations);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

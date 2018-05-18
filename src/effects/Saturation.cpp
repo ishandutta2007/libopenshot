@@ -54,6 +54,9 @@ void Saturation::init_effect_details()
 	info.description = "Adjust the color saturation.";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&saturation);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

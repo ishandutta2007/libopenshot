@@ -55,6 +55,16 @@ void ColorShift::init_effect_details()
 	info.description = "Shift the colors of an image up, down, left, and right (with infinite wrapping).";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&red_x);
+	Keyframes.push_back(&red_y);
+	Keyframes.push_back(&green_x);
+	Keyframes.push_back(&green_y);
+	Keyframes.push_back(&blue_x);
+	Keyframes.push_back(&blue_y);
+	Keyframes.push_back(&alpha_x);
+	Keyframes.push_back(&alpha_y);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

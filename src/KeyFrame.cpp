@@ -59,12 +59,20 @@ Keyframe::Keyframe(double value) : needs_update(true) {
 
 	// Add initial point
 	AddPoint(Point(value));
+
+	// Init fps to 0
+	fps.num = 0;
+	fps.den = 0;
 }
 
 // Keyframe constructor
 Keyframe::Keyframe() : needs_update(true) {
 	// Init the factorial table, needed by bezier curves
 	CreateFactorialTable();
+
+	// Init fps to 0
+	fps.num = 0;
+	fps.den = 0;
 }
 
 // Add a new point on the key-frame.  Each point has a primary coordinate,
@@ -122,6 +130,15 @@ int64_t Keyframe::FindIndex(Point p) {
 
 	// no matching point found
 	throw OutOfBoundsPoint("Invalid point requested", -1, Points.size());
+}
+
+// Clear all points in this keyframe
+void Keyframe::Clear() {
+	// mark as dirty
+	needs_update = true;
+
+	// Clear points
+	Points.clear();
 }
 
 // Determine if point already exists
@@ -322,6 +339,9 @@ Json::Value Keyframe::JsonValue() {
 
 	// Create root json object
 	Json::Value root;
+	root["fps"] = Json::Value(Json::objectValue);
+	root["fps"]["num"] = fps.num;
+	root["fps"]["den"] = fps.den;
 	root["Points"] = Json::Value(Json::arrayValue);
 
 	// loop through points, and find a matching coordinate
@@ -363,6 +383,14 @@ void Keyframe::SetJsonValue(Json::Value root) {
 
 	// mark as dirty
 	needs_update = true;
+
+	// Apply fps
+	if (!root["fps"].isNull() && root["fps"].isObject()) {
+		if (!root["fps"]["num"].isNull() && root["fps"]["num"].asInt() != 0)
+			fps.num = root["fps"]["num"].asInt();
+		if (!root["fps"]["den"].isNull() && root["fps"]["den"].asInt() != 0)
+			fps.den = root["fps"]["den"].asInt();
+	}
 
 	// Clear existing points
 	Points.clear();
@@ -505,6 +533,31 @@ void Keyframe::UpdatePoint(int64_t index, Point p) {
 
 	// Reorder points
 	ReorderPoints();
+}
+
+void Keyframe::UpdateFramerate(Fraction new_fps) {
+	// Set framerate if not found
+	if (this && (fps.num == 0 || fps.den == 0)) {
+		// Init framerate and do not adjust keyframes
+		fps.num = new_fps.num;
+		fps.den = new_fps.den;
+
+	} else if (this && (fps.num != new_fps.num || fps.den != new_fps.den)) {
+		// Loop through all points, and adjust X coordinate to new framerate
+		double fps_diff = new_fps.ToDouble() / fps.ToDouble();
+		for (vector<Point>::iterator it = Points.begin(); it != Points.end(); it++) {
+			Point *p = &(*it);
+			// Adjust X coordinates for framerate diff
+			p->co.X = round(p->co.X * fps_diff);
+		}
+
+		// Mark keyframe dirty
+		needs_update = true;
+
+		// Update this keyframe's framerate
+		fps.num = new_fps.num;
+		fps.den = new_fps.den;
+	}
 }
 
 void Keyframe::PrintPoints() {

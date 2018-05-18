@@ -55,6 +55,10 @@ void Mask::init_effect_details()
 	info.description = "Uses a grayscale mask image to gradually wipe / transition between 2 images.";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&brightness);
+	Keyframes.push_back(&contrast);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

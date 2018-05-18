@@ -55,6 +55,16 @@ void Bars::init_effect_details()
 	info.description = "Add colored bars around your video.";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&color.alpha);
+	Keyframes.push_back(&color.red);
+	Keyframes.push_back(&color.green);
+	Keyframes.push_back(&color.blue);
+	Keyframes.push_back(&left);
+	Keyframes.push_back(&top);
+	Keyframes.push_back(&right);
+	Keyframes.push_back(&bottom);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a

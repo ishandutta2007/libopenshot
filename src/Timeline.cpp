@@ -134,6 +134,37 @@ void Timeline::apply_mapper_to_clip(Clip* clip)
 
 	// Update clip reader
 	clip->Reader(clip_reader);
+
+	// Loop through all known clip keyframes
+	if (clip->Keyframes.size() > 0) {
+		list<Keyframe *>::iterator keyframe_itr;
+		for (keyframe_itr = clip->Keyframes.begin(); keyframe_itr != clip->Keyframes.end(); ++keyframe_itr) {
+			// Get clip object from the iterator
+			Keyframe *keyframe = (*keyframe_itr);
+			keyframe->UpdateFramerate(info.fps);
+		}
+	}
+
+	// loop through clip effects
+	if (clip->Effects().size() > 0) {
+		list<EffectBase *>::iterator effect_itr;
+		for (effect_itr = clip->Effects().begin(); effect_itr != clip->Effects().end(); ++effect_itr) {
+			// Get clip object from the iterator
+			EffectBase *effect = (*effect_itr);
+
+			// Loop through all known keyframes on this effect (if any)
+			if (effect && effect->Keyframes.size() > 0) {
+				list<Keyframe *>::iterator effect_keyframe_itr;
+				for (effect_keyframe_itr = effect->Keyframes.begin();
+					 effect_keyframe_itr != effect->Keyframes.end(); ++effect_keyframe_itr) {
+					// Get clip object from the iterator
+					Keyframe *keyframe = (*effect_keyframe_itr);
+					if (keyframe)
+						keyframe->UpdateFramerate(info.fps);
+				}
+			}
+		}
+	}
 }
 
 // Apply the timeline's framerate and samplerate to all clips
@@ -152,6 +183,24 @@ void Timeline::ApplyMapperToClips()
 		// Apply framemapper (or update existing framemapper)
 		apply_mapper_to_clip(clip);
 	}
+
+	// loop through all transitions (or global effects)
+	list<EffectBase*>::iterator effect_itr;
+	for (effect_itr=effects.begin(); effect_itr != effects.end(); ++effect_itr)
+	{
+		// Get clip object from the iterator
+		EffectBase *effect = (*effect_itr);
+
+		// Loop through all known keyframes on this effect (if any)
+		list<Keyframe*>::iterator effect_keyframe_itr;
+		for (effect_keyframe_itr=effect->Keyframes.begin(); effect_keyframe_itr != effect->Keyframes.end(); ++effect_keyframe_itr)
+		{
+			// Get clip object from the iterator
+			Keyframe *keyframe = (*effect_keyframe_itr);
+			keyframe->UpdateFramerate(info.fps);
+		}
+	}
+
 }
 
 // Calculate time of a frame number, based on a framerate

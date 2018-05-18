@@ -33,6 +33,7 @@
 	#define __JUCE_UNITTEST_JUCEHEADER__
 #endif
 
+#include <list>
 #include <memory>
 #include <sstream>
 #include "Exceptions.h"
@@ -95,6 +96,9 @@ namespace openshot {
 
 		/// Set Max Image Size (used for performance optimization)
 		void SetMaxSize(int width, int height) { max_width = width; max_height = height;  };
+
+		// List of all known keyframes associated with this Clip
+		list<Keyframe*> Keyframes; ///< A list of all keyframes contained in this instance
 
 		/// Get and Set JSON methods
 		virtual string Json() = 0; ///< Generate JSON string of this object

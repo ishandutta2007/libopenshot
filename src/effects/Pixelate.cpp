@@ -55,6 +55,13 @@ void Pixelate::init_effect_details()
 	info.description = "Pixelate (increase or decrease) the number of visible pixels.";
 	info.has_audio = false;
 	info.has_video = true;
+
+	// Populate list of keyframes
+	Keyframes.push_back(&pixelization);
+	Keyframes.push_back(&left);
+	Keyframes.push_back(&top);
+	Keyframes.push_back(&right);
+	Keyframes.push_back(&bottom);
 }
 
 // This method is required for all derived classes of EffectBase, and returns a
