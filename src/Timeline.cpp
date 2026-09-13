@@ -1566,12 +1566,12 @@ void Timeline::apply_json_to_clips(Json::Value change) {
 
 		// Remove existing clip
 		if (existing_clip) {
-			// Remove clip from timeline
-			RemoveClip(existing_clip);
-
 			// Calculate start and end frames that this impacts, and remove those frames from the cache
 			int64_t old_starting_frame = (existing_clip->Position() * info.fps.ToDouble()) + 1;
 			int64_t old_ending_frame = ((existing_clip->Position() + existing_clip->Duration()) * info.fps.ToDouble()) + 1;
+
+			// RemoveClip deletes clips owned by the timeline. Read their bounds first.
+			RemoveClip(existing_clip);
 			final_cache->Remove(old_starting_frame - 8, old_ending_frame + 8);
 		}
 
