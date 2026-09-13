@@ -37,6 +37,41 @@
 
 using namespace openshot;
 
+TEST_CASE("Deleting a JSON-owned clip invalidates its former range", "[libopenshot][timeline][sentry-delete]")
+{
+	Timeline timeline(2, 2, Fraction(30, 1), 44100, 2, LAYOUT_STEREO);
+	DummyReader reader;
+	Clip source(&reader);
+	source.Id("owned");
+	source.Position(1.0);
+	source.End(1.0);
+	Json::Value changes(Json::arrayValue);
+	Json::Value change;
+	change["type"] = "insert";
+	change["key"].append("clips");
+	change["value"] = source.JsonValue();
+	changes.append(change);
+	timeline.ApplyJsonDiff(changes.toStyledString());
+	REQUIRE(timeline.GetClip("owned") != nullptr);
+
+	for (int number : {5, 45, 90})
+		timeline.GetCache()->Add(std::make_shared<Frame>(number, 2, 2, "black"));
+	REQUIRE(timeline.GetCache()->Contains(45));
+
+	changes[0]["type"] = "delete";
+	Json::Value id;
+	id["id"] = "owned";
+	changes[0]["key"].append(id);
+	changes[0]["value"] = Json::nullValue;
+	timeline.ApplyJsonDiff(changes.toStyledString());
+	CHECK(timeline.GetClip("owned") == nullptr);
+	CHECK_FALSE(timeline.GetCache()->Contains(45));
+	CHECK(timeline.GetCache()->Contains(5));
+	CHECK(timeline.GetCache()->Contains(90));
+	// Duplicate delayed deletes are harmless.
+	CHECK_NOTHROW(timeline.ApplyJsonDiff(changes.toStyledString()));
+}
+
 static uint64_t image_fingerprint(const std::shared_ptr<QImage>& image) {
 	const uint64_t kFnvOffset = 1469598103934665603ULL;
 	const uint64_t kFnvPrime = 1099511628211ULL;
